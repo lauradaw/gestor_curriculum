@@ -45,30 +45,49 @@
 		$consulta = "SELECT * FROM curriculums";
 		$result_set = mysqli_query($con, $consulta) or die("Error en la consulta");
 		while($row = mysqli_fetch_row($result_set)){
-			$USERS[] = $row[1];
+			@$USERS[] = $row[1];
 		}
-		//Comprobará en ese array si existe el usuario logueado, si existe mostrará otra cosa.
-		if(in_array($user, $USERS)){
 
-			echo '<article id="cuerpo">
-					<h1 class="dis">' . $slogan . '</h1>
-					<h3 class="cont_slogan"></h3>
-					<br /> 
-					<div style="padding: 0px 52px; margin-bottom: 140px"></div>
-				</article>';
+		if(!is_null(@$USERS)){
+			//Comprobará en ese array si existe el usuario logueado, si existe mostrará otra cosa.
+			if(in_array($user, $USERS)){
+
+				echo '<article id="cuerpo">
+						<h1 class="dis">' . $slogan . '</h1>
+						<h3 class="cont_slogan"></h3>
+						<br /> 
+						<div style="padding: 0px 52px; margin-bottom: 140px"></div>
+					</article>';
+			}else{
+
+				//Si no hay currículum creado, mostrará lo siguiente más un botón para crear tu curriculum.		
+				echo '<article id="cuerpo">
+						<h1 class="dis">' .  $slogan . '</h1>
+						<form action="nuevo_curriculum.php" method="POST">
+							<span id="login">
+								<button name="enviar" style="width: 250px; padding: 2px; position: fixed; margin-top: -70;" type="submit" value="Enviardatos">Nuevo Curriculum</button>
+							</span>
+						</form>
+						<h3 class="cont_slogan">' . $contenido_slogan . '</h3>
+						<br />
+						<div style="padding: 0px 52px; margin-bottom: 140px">' . $descripcion_tienda . '</div>
+					</article>';
+			}
+
 		}else{
-
-			//Si no hay currículum creado, mostrará lo siguiente más un botón para crear tu curriculum.		
 			echo '<article id="cuerpo">
-				<h1 class="dis">' .  $slogan . '</h1>
-				<form action="nuevo_curriculum.php" method="POST">
-					<span id="login"><button name="enviar" style="width: 250px; padding: 2px; position: fixed; margin-top: -70;" type="submit" value="Enviardatos">Nuevo Curriculum</button></span>
-				</form>
-				<h3 class="cont_slogan">' . $contenido_slogan . '</h3>
-				<br />
-				<div style="padding: 0px 52px; margin-bottom: 140px">' . $descripcion_tienda . '</div>
+					<h1 class="dis">' .  $slogan . '</h1>
+					<form action="nuevo_curriculum.php" method="POST">
+						<span id="login">
+							<button name="enviar" style="width: 250px; padding: 2px; position: fixed; margin-top: -70;" type="submit" value="Enviardatos">Nuevo Curriculum</button>
+						</span>
+					</form>
+					<h3 class="cont_slogan">' . $contenido_slogan . '</h3>
+					<br />
+					<div style="padding: 0px 52px; margin-bottom: 140px">' . $descripcion_tienda . '</div>
 				</article>';
 		}
+		
 	}
 	//Llamamos al pie.
 	include('pie.php');
