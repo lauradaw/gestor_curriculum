@@ -47,11 +47,7 @@
             	$users[] = $row[1];
             	$emails[] = $row[3];
         	}
-        		//Contamos el total de IDs para saber cual será la siguiente.
-        		$total_ID = count($IDs);
-        		//Al total de IDS le sumamos 1 para que no repitan las IDS en la base de datos, esto lo hacemos porque el campo auto incremento no está activado.
-        		$siguiente_ID = $total_ID + 1;
-
+        	
         	//Se comprueba que el usuario que se va a registrar no existe ya dentro de la base de datos.
         	if(in_array($user, $users)){
         		echo '<script language="javascript">alert("¡El usuario ya existe, introduce otro!");</script>';
@@ -64,7 +60,7 @@
         	}
         	//Si todas las condiciones de validación no se han cumplido, se creará un nuevo registro dentro de la base de datos.
         	if($error == 0){
-        		$consulta = "INSERT INTO usuarios (ID, Login, Password, Email, Tipo) VALUES ('" . $siguiente_ID . "','" . $user . "','" . $pass_md5 . "','" . $email . "','" . $tipo . "')";
+        		$consulta = "INSERT INTO usuarios (ID, Login, Password, Email, Tipo) VALUES ('','" . $user . "','" . $pass_md5 . "','" . $email . "','" . $tipo . "')";
         		mysqli_query($con, $consulta) or die("Error al realizar la consulta"); 
 				echo '<script language="javascript">window.alert("¡¡Usuario creado correctamente!!"); window.location="entrar.php";</script>';
 				//En caso de que la consulta de error.
