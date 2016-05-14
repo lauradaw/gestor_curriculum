@@ -9,6 +9,37 @@
 			<meta charset="UTF-8">
 			<link rel="stylesheet" type="text/css" href="css/estilo.css" media="screen" />
 			<link rel="stylesheet" type="text/css" href="css/<?php echo @$css ?>" media="screen" />
+
+			<style>
+				#primero:hover{
+					cursor: pointer;
+					background-color: #376bb1;
+					color: white;
+					transition: .1s;
+					-webkit -transition: .1s;
+				}
+				#segundo:hover{
+					cursor: pointer;
+					background-color: #376bb1;
+					color: white;
+					transition: .1s;
+					-webkit -transition: .1s;
+				}
+				#tercero:hover{
+					cursor: pointer;
+					background-color: #376bb1;
+					color: white;
+					transition: .1s;
+					-webkit -transition: .1s;
+				}
+				#cuarto:hover{
+					cursor: pointer;
+					background-color: #376bb1;
+					color: white;
+					transition: .1s;
+					-webkit -transition: .1s;
+				}
+			</style>
 		</head>
 		<body>
 
@@ -92,7 +123,7 @@
 											</a>
 										 </li>
 										<li>
-											<a href="curriculum.php" alt="Sube tu curriculum" title="Sube tu curriculum">
+											<a href="nuevo_curriculum.php" alt="Sube tu curriculum" title="Sube tu curriculum">
 												<img src="img/document.png">
 											</a>
 										</li>
@@ -121,7 +152,7 @@
 							//Si el usuario es un visitante, aparecerá un login para poder acceder a la web.
 							if (is_null($user)){
 								echo '<article id="carro">
-										<p><form id="acceder" action="entrar.php" method="POST"><span id="login">Usuario: <input type="text" name="user" placeholder="Introduce usuario"></span><span id="login">Contraseña: <input type="password" name="passw" placeholder="Introduce contraseña"></span><span id="login"><button name="enviar" type="submit" value="Enviardatos">Entrar</button></button></span></form></p>
+										<p><form id="acceder" action="entrar.php" method="POST"><span id="login">Usuario: <input type="text" name="user" placeholder="Introduce usuario"></span><span id="login">Contraseña: <input type="password" name="passw" placeholder="Introduce contraseña"></span><span id="login"><button name="enviar" type="submit" value="Enviardatos">Entrar</button></span></form></p>
 									 </article>';
 							}
 						?>
