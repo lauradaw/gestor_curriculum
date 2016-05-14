@@ -65,11 +65,6 @@
 					$users[] = $row[1];
 	           		$emails[] = $row[3];
         		}
-
-        		//Calculamos el total de IDs registradas dentro de la base de datos.
-        		$totalID = count($IDS);
-        		//Calculamos la siguiente ID.
-        		$siguiente_ID = $totalID + 1;
         		
         		//Se comprueba que el usuario que se va a registrar no existe ya dentro de la base de datos.
 	        	if(in_array($nuevo_user, $users)){
@@ -86,8 +81,9 @@
         		//Si todas las validaciones han sido correctas.
         		if($error < 1){
         			//Insertamos dentro de la tabla usuarios los datos recibidos del formulario.
-        			$consulta = "INSERT INTO usuarios (ID, Login, Password, Email, Tipo) VALUES ('" . $siguiente_ID . "','" . $nuevo_user . "','" . md5($nuevo_password) . "','" . $nuevo_email . "','" . $nuevo_tipo . "')";
-        			mysqli_query($con, $consulta) or die("Error al realizar la consulta"); 
+        			$consulta = "INSERT INTO usuarios (ID, Login, Password, Email, Tipo) VALUES ('','" . $nuevo_user . "','" . md5($nuevo_password) . "','" . $nuevo_email . "','" . $nuevo_tipo . "')";
+        			mysqli_query($con, $consulta) or die("Error al realizar la consulta");
+        		
 					echo '<script language="javascript">window.alert("¡¡Usuario creado correctamente!!"); window.location="entrar.php";</script>';
         		}else{
         			echo '<script language="javascript">alert("Error al crear el usuario")</script>';
