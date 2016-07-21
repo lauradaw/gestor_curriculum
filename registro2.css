@@ -1,0 +1,40 @@
+body{
+	background: #e1e1e1;
+	color: black;
+}
+#contenedor{
+	background: #0d2c51;
+	width: 35%;
+    height: auto;
+    margin: auto;
+    position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#cuerpo{
+	color: black;
+	padding: 5px 8px;
+	height: auto;
+}
+.contenido{
+	background: white;
+	width: 89.5%;
+	margin: auto auto 5px;
+	padding: 30px 30px 1px;
+}
+.titulo{
+	color: white;
+}
+
+table{
+	width: 100%;
+}
+
+input{
+	width: 100%;
+}
+
+.etiqueta{
+	width: 35%;
+}
