@@ -6,16 +6,21 @@
 	$pagina = 'Nuevo Currículum';
 	//Llamamos al css de contacto.
 	$css = 'contacto.css';
+	include ('funciones.php');
+	$error = 0;
+	if(isset($_POST['siguiente'])){
+		validar();
+	}
 
 	if($_SESSION['user']){
 		$user = $_SESSION['user'];
 		
 		if(empty($_SESSION['session'])){
-			$_SESSION['session'] = "DatosPersonales";	
+			$_SESSION['session'] = 1;	
 		}
 
 		if(isset($_POST['refr'])){
-			$_SESSION['session'] = empty($_SESSION['session']);
+			session_clear();
 			header('location: #');
 		}
 
@@ -45,35 +50,24 @@
 		@$foto = $_SESSION['foto'];
 
 		//Formación Reglada
-		@$nombre = $_SESSION['nombre'];
-		@$apellidos = $_SESSION['apellidos'];
-		@$fecha = $_SESSION['nacimiento'];
-		@$direccion = $_SESSION['direccion'];
-		@$telefono = $_SESSION['tel'];
-		@$nacionalidad = $_SESSION['nacionalidad'];
-		@$foto = $_SESSION['foto'];
+		@$categoria = $_SESSION['categoria'];
+		@$estudio = $_SESSION['estudio'];
+		@$descripcion = $_SESSION['descripcion'];
+		@$graduacion = $_SESSION['graduacion'];
+		@$fechatit = $_SESSION['fechatit'];
 
 		//Formación No Reglada
-		@$nombre = $_SESSION['nombre'];
-		@$apellidos = $_SESSION['apellidos'];
-		@$fecha = $_SESSION['nacimiento'];
-		@$direccion = $_SESSION['direccion'];
-		@$telefono = $_SESSION['tel'];
-		@$nacionalidad = $_SESSION['nacionalidad'];
-		@$foto = $_SESSION['foto'];
+		@$tituloFN = $_SESSION['tituloFN'];
+		@$descripcionFN = $_SESSION['descripcionFN'];
+		@$tipoFN = $_SESSION['tipoFN'];
+		
 
 		//Hobbies
-		@$nombre = $_SESSION['nombre'];
-		@$apellidos = $_SESSION['apellidos'];
-		@$fecha = $_SESSION['nacimiento'];
-		@$direccion = $_SESSION['direccion'];
-		@$telefono = $_SESSION['tel'];
-		@$nacionalidad = $_SESSION['nacionalidad'];
-		@$foto = $_SESSION['foto'];
-
-
+		@$NHobbie = $_SESSION['NHobbie'];
+		@$DHobbie = $_SESSION['DHobbie'];
+		
 		switch($_SESSION['session']){
-			case "DatosPersonales":
+			case 1:
 				//Variable para indicar el nombre de la página en el titulo.
 				$pagina = 'Datos Personales';
 				include('cabecera.php');		
@@ -94,26 +88,22 @@
 					}
 				</style>
 				<article id="cuerpo">
-					<form action="#" method="POST">
-							<button style="width: 220px;" id="primero" name="step1">Datos Personales</button>
-							<button style="width: 220px;" id="segundo" name="step2">Formación Reglada</button>
-							<button style="width: 220px;" id="tercero" name="step3">Formación No Reglada</button>
-							<button style="width: 220px;" id="cuarto" name="step4">Hobbbies</button>
-							<button style="width: 220px;" id="refr" name="refr">Refrescar Sesion</button>
-					</form>
+<?php
+					desplegar_botones();
+?>
 					<div class="contenido">
 						<table>
 							<tr>
-								<td><label for = "nombre">Nombre: </label></td>
+								<td><label for = "nombre">Nombre*: </label></td>
 								<td><input type = "text" name="nombre" value="<?php echo $nombre ?>"></td>
 							</tr>
 							<tr>
-								<td><label for = "apellidos">Apellidos: </label></td>
+								<td><label for = "apellidos" value="<?php echo $apellidos ?>">Apellidos*: </label></td>
 								<td><input type = "text" name="apellidos"></td>
 							</tr>
 							<tr>
-								<td><label for = "nacimiento">Fecha Nacimiento: </label></td>
-								<td><input type = "text" name="nacimiento" placeholder="AAAA/MM/DD"></td>
+								<td><label for = "nacimiento" value="<?php echo $fecha ?>">Fecha Nacimiento*: </label></td>
+								<td><input type = "text" name="nacimiento" placeholder="AAAA/MM/DD" ></td>
 							</tr>
 							<tr>
 								<td><label for = "direccion">Dirección: </label></td>
@@ -124,7 +114,7 @@
 								<td><input type = "text" name="tel"></td>
 							</tr>
 							<tr>
-								<td><label for = "nacionalidad">Nacionalidad: </label></td>
+								<td><label for = "nacionalidad">Nacionalidad*: </label></td>
 								<td><input type = "text" name="nacionalidad"></td>
 							</tr>
 							<tr>
@@ -137,22 +127,14 @@
 							<button name="siguiente">Siguiente</button>
 						</form>
 <?php
-				if(isset($_POST['step2'])){
-					$_SESSION['session'] = "FormacionReglada";
-					header('location: #');
-				}
-				if(isset($_POST['step3'])){
-					$_SESSION['session'] = "FormacionNoReglada";
-					header('location: #');
-				}
-				if(isset($_POST['step4'])){
-					$_SESSION['session'] = "Hobbies";
-					header('location: #');
-				}
 
 				if(isset($_POST['siguiente'])){
-					$_SESSION['session'] = "FormacionReglada";
-					header('location: #');
+					if($error == 0){
+						$_SESSION['session'] = 2;
+						header('location: #');
+					}else{
+						echo 'Revisa los campos';
+					}
 				}
 				//Se incluye el pie de página.
 				include('pie.php');
@@ -161,7 +143,7 @@
 					</html>';
 			break;
 
-			case "FormacionReglada":
+			case 2:
 				//Variable para indicar el nombre de la página en el titulo.
 				$pagina = 'Formación Reglada';
 				include('cabecera.php');
@@ -182,20 +164,16 @@
 					}
 				</style>
 				<article id="cuerpo">
-					<form action="#" method="POST">
-							<button style="width: 220px;" id="primero" name="step1">Datos Personales</button>
-							<button style="width: 220px;" id="segundo" name="step2">Formación Reglada</button>
-							<button style="width: 220px;" id="tercero" name="step3">Formación No Reglada</button>
-							<button style="width: 220px;" id="cuarto" name="step4">Hobbbies</button>
-							<button style="width: 220px;" id="refr" name="refr">Refrescar Sesion</button>
-					</form>
+<?php
+					desplegar_botones();
+?>
 				
 					<div class="contenido">
 						<form action="#" method="POST">
 						<table id="t011">
 							<tr>
 								<td><label for = "puesto">Categoría: </label></td>
-								<td>	<select name="categoria1">
+								<td>	<select name="categoria">
 									<?php
 										for($i = 0; $i < $totalcat; $i++){
 											echo '<option value=' . $i . '>';
@@ -222,7 +200,7 @@
 									</select>
 								</td>
 								<td><label for = "puesto">Formación: </label></td>
-								<td>	<select name="estudio1">
+								<td>	<select name="estudio">
 									<?php
 										for($i = 0; $i < $totalEst; $i++){
 											echo '<option value=' . $i . '>';
@@ -254,299 +232,26 @@
 									?>
 									</select>
 								</td>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="descripcion1"></td>
+								<td><label for="descripcion">Título: </label></td>
+								<td><input type="text" class="descripcion" name="descripcion"></td>
 								<td><label for="graduacion">Año de Graduación: </label></td>
-								<td><input class="fechatit" type="text" name="graduacion1" placeholder="AAAA/MM/DD"></td>
-							</tr>
-							<tr>
-								<td><label for = "puesto">Categoría: </label></td>
-								<td>	<select name="categoria2">
-									<?php
-										for($i = 0; $i < $totalcat; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdCat[$i]) {
-													case 1:
-														echo 'Básico';
-													break;
-													case 2:
-														echo 'Moda';
-													break;
-													case 3:
-														echo 'Informática';
-													break;
-													case 4:
-														echo 'Administración';
-													break;
-													case 5:
-														echo 'Estética';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for = "puesto">Formación: </label></td>
-								<td>	<select name="estudio2">
-									<?php
-										for($i = 0; $i < $totalEst; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdEst[$i]) {
-													case 1:
-														echo 'Primaria';
-													break;
-													case 2:
-														echo 'ESO';
-													break;
-													case 3:
-														echo 'Bachiller';
-													break;
-													case 4:
-														echo 'FP Grado Medio';
-													break;
-													case 5:
-														echo 'FP Grado Superior';
-													break;
-													case 6:
-														echo 'Universitario';
-													break;
-													case 7:
-														echo 'Máster';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="descripcion2"></td>
-								<td><label for="graduacion">Año de Graduación: </label></td>
-								<td><input class="fechatit" type="text" name="graduacion2" placeholder="AAAA/MM/DD"></td>
-							</tr>
-							<tr>
-								<td><label for = "puesto">Categoría: </label></td>
-								<td>	<select name="categoria3">
-									<?php
-										for($i = 0; $i < $totalcat; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdCat[$i]) {
-													case 1:
-														echo 'Básico';
-													break;
-													case 2:
-														echo 'Moda';
-													break;
-													case 3:
-														echo 'Informática';
-													break;
-													case 4:
-														echo 'Administración';
-													break;
-													case 5:
-														echo 'Estética';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for = "puesto">Formación: </label></td>
-								<td>	<select name="estudio3">
-									<?php
-										for($i = 0; $i < $totalEst; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdEst[$i]) {
-													case 1:
-														echo 'Primaria';
-													break;
-													case 2:
-														echo 'ESO';
-													break;
-													case 3:
-														echo 'Bachiller';
-													break;
-													case 4:
-														echo 'FP Grado Medio';
-													break;
-													case 5:
-														echo 'FP Grado Superior';
-													break;
-													case 6:
-														echo 'Universitario';
-													break;
-													case 7:
-														echo 'Máster';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="descripcion3"></td>
-								<td><label for="graduacion">Año de Graduación: </label></td>
-								<td><input class="fechatit" type="text" name="graduacion3" placeholder="AAAA/MM/DD"></td>
-							</tr>
-							<tr>
-								<td><label for = "puesto">Categoría: </label></td>
-								<td>	<select name="categoria4">
-									<?php
-										for($i = 0; $i < $totalcat; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdCat[$i]) {
-													case 1:
-														echo 'Básico';
-													break;
-													case 2:
-														echo 'Moda';
-													break;
-													case 3:
-														echo 'Informática';
-													break;
-													case 4:
-														echo 'Administración';
-													break;
-													case 5:
-														echo 'Estética';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for = "puesto">Formación: </label></td>
-								<td>	<select name="estudio4">
-									<?php
-										for($i = 0; $i < $totalEst; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdEst[$i]) {
-													case 1:
-														echo 'Primaria';
-													break;
-													case 2:
-														echo 'ESO';
-													break;
-													case 3:
-														echo 'Bachiller';
-													break;
-													case 4:
-														echo 'FP Grado Medio';
-													break;
-													case 5:
-														echo 'FP Grado Superior';
-													break;
-													case 6:
-														echo 'Universitario';
-													break;
-													case 7:
-														echo 'Máster';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="descripcion4"></td>
-								<td><label for="graduacion">Año de Graduación: </label></td>
-								<td><input class="fechatit" type="text" name="graduacion4" placeholder="AAAA/MM/DD"></td>
-							</tr>
-							<tr>
-								<td><label for = "puesto">Categoría: </label></td>
-								<td>	<select name="categoria5">
-									<?php
-										for($i = 0; $i < $totalcat; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdCat[$i]) {
-													case 1:
-														echo 'Básico';
-													break;
-													case 2:
-														echo 'Moda';
-													break;
-													case 3:
-														echo 'Informática';
-													break;
-													case 4:
-														echo 'Administración';
-													break;
-													case 5:
-														echo 'Estética';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for = "puesto">Formación: </label></td>
-								<td>	<select name="estudio5">
-									<?php
-										for($i = 0; $i < $totalEst; $i++){
-											echo '<option value=' . $i . '>';
-												switch ($IdEst[$i]) {
-													case 1:
-														echo 'Primaria';
-													break;
-													case 2:
-														echo 'ESO';
-													break;
-													case 3:
-														echo 'Bachiller';
-													break;
-													case 4:
-														echo 'FP Grado Medio';
-													break;
-													case 5:
-														echo 'FP Grado Superior';
-													break;
-													case 6:
-														echo 'Universitario';
-													break;
-													case 7:
-														echo 'Máster';
-													break;
-												}
-											echo '</option>';
-										}
-									?>
-									</select>
-								</td>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="descripcion5"></td>
-								<td><label for="graduacion">Año de Graduación: </label></td>
-								<td><input class="fechatit" type="text" name="graduacion5" placeholder="AAAA/MM/DD"></td>
+								<td><input class="fechatit" type="text" name="graduacion" placeholder="AAAA/MM/DD"></td>
 							</tr>
 						</table>
 						<br /><br />
 							<button name="siguiente">Siguiente</button>
 							<button name="atras">Atrás</button>
 <?php
-				if(isset($_POST['step1'])){
-					$_SESSION['session'] = "DatosPersonales";
-					header('location: #');
-				}
-				if(isset($_POST['step3'])){
-					$_SESSION['session'] = "FormacionNoReglada";
-					header('location: #');
-				}
-				if(isset($_POST['step4'])){
-					$_SESSION['session'] = "Hobbies";
-					header('location: #');
-				}
-
 				if(isset($_POST['siguiente'])){
-					$_SESSION['session'] = "FormacionNoReglada";
-					header('location: #');
+					if($error == 0){
+						$_SESSION['session'] = 3;
+						header('location: #');
+					}else{
+						echo 'Revisa los campos';
+					}
 				}
 				if(isset($_POST['atras'])){
-					$_SESSION['session'] = "DatosPersonales";
+					$_SESSION['session'] = 1;
 					header('location: #');
 				}
 				//Se incluye el pie de página.
@@ -555,7 +260,7 @@
 						</body>
 					</html>';
 			break;
-			case "FormacionNoReglada":
+			case 3:
 				//Variable para indicar el nombre de la página en el titulo.
 				$pagina = 'Formación No Reglada';
 				include('cabecera.php');
@@ -577,38 +282,18 @@
 				</style>
 
 				<article id="cuerpo">
-					<form action="#" method="POST">
-							<button style="width: 220px;" id="primero" name="step1">Datos Personales</button>
-							<button style="width: 220px;" id="segundo" name="step2">Formación Reglada</button>
-							<button style="width: 220px;" id="tercero" name="step3">Formación No Reglada</button>
-							<button style="width: 220px;" id="cuarto" name="step4">Hobbbies</button>
-							<button style="width: 220px;" id="refr" name="refr">Refrescar Sesion</button>
-					</form>
+<?php
+					desplegar_botones();
+?>
 					<div class="contenido">
 						<table id="t011">
 							<tr>
 								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="tituloFN1"></td>
+								<td><input type="text" class="descripcion" name="tituloFN"></td>
 								<td><label for="graduacion">Descripcion: </label></td>
-								<td><input class="descripcion" type="text" name="descripcionFN1"></td>
+								<td><input class="descripcion" type="text" name="descripcionFN"></td>
 								<td><label for="graduacion">Tipo: </label></td>
-								<td><input class="descripcion" type="text" name="tipoFN1"></td>
-							</tr>
-							<tr>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="tituloFN2"></td>
-								<td><label for="graduacion">Descripcion: </label></td>
-								<td><input class="descripcion" type="text" name="descripcionFN2"></td>
-								<td><label for="graduacion">Tipo: </label></td>
-								<td><input class="descripcion" type="text" name="tipoFN2"></td>
-							</tr>
-							<tr>
-								<td><label for="descripcion1">Título: </label></td>
-								<td><input type="text" class="descripcion" name="tituloFN3"></td>
-								<td><label for="graduacion">Descripcion: </label></td>
-								<td><input class="descripcion" type="text" name="descripcionFN3"></td>
-								<td><label for="graduacion"class="descripcion">Tipo: </label></td>
-								<td><input class="descripcion" type="text" name="tipoFN3"></td>
+								<td><input class="descripcion" type="text" name="tipoFN"></td>
 							</tr>
 						</table>
 						<br /><br />
@@ -619,24 +304,11 @@
 						
 <?php
 					if(isset($_POST['siguiente'])){
-						$_SESSION['session'] = "Hobbbies";
+						$_SESSION['session'] = 4;
 						header('location: #');
 					}
 					if(isset($_POST['atras'])){
-						$_SESSION['session'] = "FormacionNoReglada";
-						header('location: #');
-					}
-
-					if(isset($_POST['step1'])){
-						$_SESSION['session'] = "DatosPersonales";
-						header('location: #');
-					}
-					if(isset($_POST['step2'])){
-						$_SESSION['session'] = "FormacionReglada";
-						header('location: #');
-					}
-					if(isset($_POST['step4'])){
-						$_SESSION['session'] = "Hobbies";
+						$_SESSION['session'] = 2;
 						header('location: #');
 					}
 
@@ -646,7 +318,7 @@
 							</body>
 						</html>';
 			break;
-			case "Hobbies":
+			case 4:
 				//Variable para indicar el nombre de la página en el titulo.
 				$pagina = 'Hobbies';
 				include('cabecera.php');
@@ -668,36 +340,40 @@
 				</style>
 
 				<article id="cuerpo">
-					<form action="#" method="POST">
-							<button style="width: 220px;" id="primero" name="step1">Datos Personales</button>
-							<button style="width: 220px;" id="segundo" name="step2">Formación Reglada</button>
-							<button style="width: 220px;" id="tercero" name="step3">Formación No Reglada</button>
-							<button style="width: 220px;" id="cuarto" name="step4">Hobbbies</button>
-							<button style="width: 220px;" id="refr" name="refr">Refrescar Sesion</button>
-					</form>
-					<div class="contenido">
-
 <?php
-				if(isset($_POST['step1'])){
-					$_SESSION['session'] = "DatosPersonales";
-					header('location: #');
-				}
-				if(isset($_POST['step2'])){
-					$_SESSION['session'] = "FormacionReglada";
-					header('location: #');
-				}
-				if(isset($_POST['step3'])){
-					$_SESSION['session'] = "FormacionNoReglada";
-					header('location: #');
-				}
+					desplegar_botones();
+?>
+					<div class="contenido"><div class="contenido">
+						<table id="t011">
+							<tr>
+								<td><label for="descripcion1">Nombre del Hobbie: </label></td>
+								<td><input type="text" class="descripcion" name="NHobbie"></td>
+								<td><label for="graduacion">Descripcion del Hobbie: </label></td>
+								<td><input class="descripcion" type="text" name="DHobbie"></td>
+							</tr>
+						</table>
+						<br /><br />
+							<form action="#" method="POST">
+								<button name="siguiente">Guardar Currículum</button>
+								<button name="atras">Atrás</button>
+							</form>
+						
+<?php
+					if(isset($_POST['siguiente'])){
+						
+					}
+					if(isset($_POST['atras'])){
+						$_SESSION['session'] = 3;
+						header('location: #');
+					}
 
-
-				//Se incluye el pie de página.
-				include('pie.php');
-				echo '		</div>
-						</body>
-					</html>';	
-	}
+					//Se incluye el pie de página.
+					include('pie.php');
+					echo '		</div>
+							</body>
+						</html>';
+			break;
+		}
 
 
 	}else{

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-05-2016 a las 18:10:49
+-- Tiempo de generación: 21-08-2016 a las 17:14:31
 -- Versión del servidor: 10.1.10-MariaDB
 -- Versión de PHP: 5.6.15
 
@@ -52,8 +52,9 @@ INSERT INTO `categorias` (`IdCategorias`, `NombreCategoria`) VALUES
 (1, 'Básico'),
 (2, 'Moda'),
 (3, 'Informática'),
-(4, 'Administración'),
-(5, 'Estética');
+(5, 'Estética'),
+(8, 'Energia'),
+(9, 'Administracion');
 
 -- --------------------------------------------------------
 
@@ -260,6 +261,30 @@ CREATE TABLE `menucurriculum` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `recuperar`
+--
+
+CREATE TABLE `recuperar` (
+  `ID` int(11) NOT NULL,
+  `Codigo` int(6) NOT NULL,
+  `Fecha` datetime NOT NULL,
+  `Email` varchar(200) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `recuperar`
+--
+
+INSERT INTO `recuperar` (`ID`, `Codigo`, `Fecha`, `Email`) VALUES
+(1, 363002, '2016-08-21 17:09:17', 'admin@gmail.com'),
+(2, 812854, '2016-08-21 17:09:53', 'miguelito@hotmail.com'),
+(3, 489808, '2016-08-21 17:10:03', 'usuario@gmail.com'),
+(4, 107701, '2016-08-21 17:10:49', 'ascension9@hotmail.com'),
+(5, 464649, '2016-08-21 17:11:01', 'ascension60@hotmail.com');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -278,9 +303,9 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`ID`, `Login`, `Password`, `Email`, `Tipo`) VALUES
 (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin@gmail.com', 2),
 (2, 'Miguel', '21232f297a57a5a743894a0e4a801fc3', 'miguelito@hotmail.com', 1),
-(3, 'RRHH', '21232f297a57a5a743894a0e4a801fc3 	', 'usuario@gmail.com', 3),
+(3, 'RRHH', '21232f297a57a5a743894a0e4a801fc3   ', 'usuario@gmail.com', 3),
 (4, 'admin9', '21232f297a57a5a743894a0e4a801fc3', 'ascension9@hotmail.com', 1),
-(5, 'admin60', '07e50bb1e7d00649f12f5045e40032a6', 'ascension60@hotmail.com', 1);
+(5, 'admin60', '21232f297a57a5a743894a0e4a801fc3', 'ascension60@hotmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -324,8 +349,7 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `comentarios`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `Comentarios_ibfk_1` (`IdComentarios`),
-  ADD KEY `Comentarios_ibfk_2` (`Redactor`);
+  ADD KEY `Comentarios_ibfk_1` (`IdComentarios`);
 
 --
 -- Indices de la tabla `datos`
@@ -370,6 +394,12 @@ ALTER TABLE `hobbies`
   ADD KEY `NombreHobbie` (`NombreHobbie`);
 
 --
+-- Indices de la tabla `recuperar`
+--
+ALTER TABLE `recuperar`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -383,7 +413,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `IdCategorias` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `IdCategorias` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT de la tabla `comentarios`
 --
@@ -410,6 +440,11 @@ ALTER TABLE `formacionreglada`
 ALTER TABLE `hobbies`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
+-- AUTO_INCREMENT de la tabla `recuperar`
+--
+ALTER TABLE `recuperar`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -422,39 +457,41 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  ADD CONSTRAINT `Comentarios_ibfk_1` FOREIGN KEY (`IdComentarios`) REFERENCES `usuarios` (`ID`),
-  ADD CONSTRAINT `Comentarios_ibfk_2` FOREIGN KEY (`Redactor`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Comentarios_ibfk_1` FOREIGN KEY (`IdComentarios`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `datospersonales`
 --
 ALTER TABLE `datospersonales`
-  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionnoreglada`
 --
 ALTER TABLE `formacionnoreglada`
-  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionreglada`
 --
 ALTER TABLE `formacionreglada`
-  ADD CONSTRAINT `FormacionReglada_ibfk_1` FOREIGN KEY (`IDFormacionReglada`) REFERENCES `usuarios` (`ID`),
+  ADD CONSTRAINT `FormacionReglada_ibfk_1` FOREIGN KEY (`IDFormacionReglada`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FormacionReglada_ibfk_2` FOREIGN KEY (`Categoria`) REFERENCES `categorias` (`IdCategorias`),
-  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`);
 
 --
 -- Filtros para la tabla `hobbies`
 --
 ALTER TABLE `hobbies`
-  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+DELIMITER $$
+--
+-- Eventos
+--
+CREATE DEFINER=`root`@`localhost` EVENT `Borrar_codigos` ON SCHEDULE EVERY 1 HOUR STARTS '2016-08-21 18:00:00' ON COMPLETION PRESERVE ENABLE DO DELETE FROM recuperar WHERE DATE_ADD(Fecha, INTERVAL 15 MINUTE)<NOW()$$
+
+DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

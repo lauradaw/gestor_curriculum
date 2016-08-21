@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 	//Iniciamos sesión.
 	SESSION_START();
 	//Llamamos al archivo de conexión con la base de datos conectar.php.
@@ -8,7 +8,7 @@
 	//Llamamos al css que necesitamos e indicamos el título de la página.
 	$css = 'backoffice.css';
 
-	$pagina = "Usuarios Registrados";
+	$pagina = "Categorías Registradas";
 	$_titulo = "Currículum";
 ?>
 
@@ -19,19 +19,15 @@
 			<?php include('backoffice_menu.php');?>
 			<article id="cuerpo_laterial">
 				<article id="cuerpo2">
-					<h1 class="titulo">Registro de Usuarios</h1>
+					<h1 class="titulo">Categorías</h1>
 					<div class="contenido" style="width:100%">
 						<table id="t01" style="width:100%">
 							<tr>
-								<th>Usuario</th>
-								<th>Email</th>
-								<th>Rango</th>
-								<th>Acciones</th>
+								<th>Categorías</th>
 							</tr>
 <?php
-							listar_usuarios();
+							listar_categorias();
 ?>
-						</table>
 					</div>
 				</article>
 			</article>

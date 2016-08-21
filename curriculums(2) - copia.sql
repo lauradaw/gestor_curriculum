@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-05-2016 a las 18:10:49
+-- Tiempo de generación: 12-08-2016 a las 19:55:10
 -- Versión del servidor: 10.1.10-MariaDB
 -- Versión de PHP: 5.6.15
 
@@ -423,22 +423,19 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `comentarios`
   ADD CONSTRAINT `Comentarios_ibfk_1` FOREIGN KEY (`IdComentarios`) REFERENCES `usuarios` (`ID`),
-  ADD CONSTRAINT `Comentarios_ibfk_2` FOREIGN KEY (`Redactor`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Comentarios_ibfk_2` FOREIGN KEY (`Redactor`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `datospersonales`
 --
 ALTER TABLE `datospersonales`
-  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionnoreglada`
 --
 ALTER TABLE `formacionnoreglada`
-  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionreglada`
@@ -446,15 +443,13 @@ ALTER TABLE `formacionnoreglada`
 ALTER TABLE `formacionreglada`
   ADD CONSTRAINT `FormacionReglada_ibfk_1` FOREIGN KEY (`IDFormacionReglada`) REFERENCES `usuarios` (`ID`),
   ADD CONSTRAINT `FormacionReglada_ibfk_2` FOREIGN KEY (`Categoria`) REFERENCES `categorias` (`IdCategorias`),
-  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `hobbies`
 --
 ALTER TABLE `hobbies`
-  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

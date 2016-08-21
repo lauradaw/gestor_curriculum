@@ -2,18 +2,12 @@
 	//Iniciamos sesión.
 	SESSION_START();
 	//Llamamos al archivo de conexión con la base de datos datos.php.
-	include('conectar.php');
+	include('datos.php');
 	//Llamamos al css registro.css
-	$css = 'backoffice.css';
+	$css = 'registro.css';
 	
-	$pagina = "Editar Perfil";
-
-	if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
-		//Envia a la página de error.
-			header("Location: 404.php");
-	}else{
-		
-	}
+	$pagina = "Editar";
+	include('cabecera.php');
 
 	//Si hay sesión guardamos los datos en variables
 	if(!is_null($_SESSION['user'])){

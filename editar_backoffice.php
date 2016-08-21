@@ -5,15 +5,11 @@
 	include('conectar.php');
 	//Llamamos al css registro.css
 	$css = 'backoffice.css';
-	
-	$usuario_recibido = $_GET['editar'];
 
-	//Si existe la variable de usuario, realizar consultas
-	if(is_null($usuario_recibido) || empty($usuario_recibido)){
-		header("Location: usuarios.php");
-	}
-	$pagina = "Editar Perfil de " . $usuario_recibido;
+	$pagina = "Editar Perfil de " . $_SESSION['user'];
 	$_titulo = "Currículum";
+
+	$sesion = $_SESSION['user'];
 
 ?>
 
@@ -28,7 +24,7 @@
 <?php
 
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
-		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
+		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 3){
 			//Envia a la página de error.
 			header("Location: 404.php");
 		//Si la condición anterior no se cumple... 
@@ -36,12 +32,12 @@
 
 			//Si pulsamos el botón de finalizar, no hacemos ningún cambio, y redirigimos a la página de usuarios
 			if(isset($_POST['finalizar'])){
-				header('location: usuarios.php');
+				header('location: backoffice.php');
 			}
 
 			$sql = new conection();
 			$conexion = $sql -> conectar();
-			$consulta = $sql -> ejecutar_consulta("SELECT * from usuarios WHERE Login='$usuario_recibido'");
+			$consulta = $sql -> ejecutar_consulta("SELECT * from usuarios WHERE Login='$sesion'");
 
 			
 			//Si hay error en la consulta...
@@ -55,15 +51,19 @@
 					$nombre = $row['Login'];
 					$passw = $row['Password'];
 					$email = $row['Email'];
-					$tipo = $row['Tipo'];
 				}
 			}
 
 			//Si pulsamos el botón de guardar, realizaremos los cambios si no hay errores de validación
 			if(isset($_POST['guardar'])){
-				$nuevo_user = $_POST['user_name'];
+				if($sesion == 'admin'){
+					$nuevo_user = $nombre;
+				}else{
+					$nuevo_user = $_POST['user_name'];
+				}
 				$nuevo_email = $_POST['mail'];
-				$nuevo_tipo = $_POST['tipo'];
+				
+				$old_pass = md5($_POST['old_pass']);
 				$nuevo_password = $_POST['pass_new1'];
 				$nuevo_password_rep = $_POST['pass_new2'];
 
@@ -92,8 +92,14 @@
 
 				//Si no está vacío el campo de password, validaremos si es correcto.
 				if(!empty($nuevo_password)){
+
+					if($old_pass != $passw){
+						echo '<script language="javascript">alert("Tu contraseña actual no es correcta");</script>';
+						//se van contabilizando los errores.
+						$error ++;
+					}
 					//Comprobamos que las contraseñas coinciden.
-					if(!$nuevo_password == $nuevo_password_rep){
+					if($nuevo_password != $nuevo_password_rep){
 						echo '<script language="javascript">alert("Las contraseñas no coinciden");</script>';
 						//se van contabilizando los errores.
 						$error ++;
@@ -144,20 +150,16 @@
 				//Si no hay errores y si no ha cambiado el valor de verificar.
 				if($error == 0 && $verificar == 0 && $verificar2 == 0){
 
-					if($nuevo_user != $usuario_recibido){
-						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Login='$nuevo_user' WHERE Login='$usuario_recibido'");
+					if($nuevo_user != $sesion){
+						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Login='$nuevo_user' WHERE Login='$sesion'");
 					}
 					
 					if($nuevo_email != $email){
-						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Email='$nuevo_email' WHERE Login='$usuario_recibido'");
+						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Email='$nuevo_email' WHERE Login='$sesion'");
 					}
 
 					if($passmd5 != $passw){
-						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Password='$passmd5' WHERE Login='$usuario_recibido'");
-					}
-
-					if($nuevo_tipo != $tipo){
-						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Tipo='$nuevo_tipo' WHERE Login='$usuario_recibido'");
+						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Password='$passmd5' WHERE Login='$sesion'");
 					}
         			
         			//Si hay error en la consulta...
@@ -167,7 +169,7 @@
 						desconectar();
 						//Si no hay errores...
 					}else{
-						echo '<script language="javascript">window.alert("¡¡Los datos se han modificado!!"); window.location="usuarios.php";</script>';
+						echo '<script language="javascript">window.alert("¡¡Los datos se han modificado!!"); window.location="backoffice.php";</script>';
         			}
         			//Si se han contabilizado errores o ha cambiado el valor de $verificar...
 				}else{
@@ -179,7 +181,7 @@
 ?>
 
 				<article id="cuerpo">
-					<h1 class="titulo">Editar la cuenta del usuario <?php echo $usuario_recibido ?></h1>
+					<h1 class="titulo">Editar la cuenta del usuario <?php echo $sesion ?></h1>
 					<div class="contenido">
 						<form id="editardatos" action="#" method="POST" ENCTYPE="multipart/form-data">
 							<table style="margin: -10px 30px" id="acceder">
@@ -188,7 +190,14 @@
 										<label>Usuario: </label>
 									</td>
 									<td>
-										<input class="campo7" type="text" name="user_name"  maxlength="30" size="25" value="<?php echo utf8_encode($usuario_recibido) ?>">
+<?php
+										if($sesion == 'admin'){
+											echo '<label>' . $sesion . '</label>';
+										}else{
+											echo '<input class="campo7" type="text" name="user_name"  maxlength="30" size="25" value="' . utf8_encode($sesion) . '">';
+										}
+											
+?>									
 									</td>
 								</tr>
 								<tr>
@@ -197,6 +206,14 @@
 									</td>
 									<td>
 										<input class="campo8" type="text" name="mail"  maxlength="50" size="25" value="<?php echo $email ?>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label>Contraseña Anterior: </label>
+									</td>
+									<td>
+										<input maxlength="30" size="25" class="campo11" type="password" name="old_pass">
 									</td>
 								</tr>
 								<tr>
@@ -220,11 +237,16 @@
 										<label>Rango: </label>
 									</td>
 									<td>
-										<select name="tipo">
-											<option value="1">Usuario</option>
-											<option value="3">Recursos Humanos</option>;
-											<option value="2">Administrador</option>;
-										</select>
+<?php
+										$tipo = $_SESSION['tipo'];
+										if($tipo == 2){
+											echo '<label>Administrador</label>';
+										}else if($tipo == 3){
+											echo '<label>RRHH</label>';
+										}else{
+											echo '<label>Usuario</label>';
+										}
+?>
 									</td>
 								</tr>
 								<tr>

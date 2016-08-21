@@ -6,21 +6,20 @@
 	//Llamamos al css de contacto.
 	$css = 'contacto.css';
 	//Recopilamos en variables los datos del formulario.
-	@$user = $_REQUEST['user'];
-	@$pass = $_REQUEST['passw'];
+	@$user = $_POST['user'];
+	@$pass = $_POST['passw'];
 	@$pass_md5 = md5($pass);
-	@$repass = $_REQUEST['repassw'];
-	@$email = $_REQUEST['mail'];
-	@$nombre = $_REQUEST['nombre'];
-	@$acepto = $_REQUEST['acepto'];
-	@$enviar = $_REQUEST['enviar'];
+	@$repass = $_POST['repassw'];
+	@$email = $_POST['mail'];
+	@$acepto = $_POST['acepto'];
+	@$enviar = $_POST['enviar'];
 	$error = 0;
 	$tipo = 1;
 
 	//Si se ha pulsado el botón.
 	if(isset($enviar)){
 		//Comprobamos que no haya campos vacíos
-		if(empty($user) || empty($pass) || empty($repass) || empty($email) || empty($nombre) || is_null($acepto)){
+		if(empty($user) || empty($pass) || empty($repass) || empty($email) || is_null($acepto)){
 			echo '<script language="javascript">alert("No pueden haber campos vacíos");</script>';
 			$error ++;
 		}else{
@@ -110,14 +109,6 @@
 						</td>
 						<td>
 							<input class="campo4" type="text" name="mail">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label>Nombre: * </label>
-						</td>
-						<td>
-							<input class="campo5" type="text" name="nombre" maxlength="25" size="15">
 						</td>
 					</tr>
 				</table>

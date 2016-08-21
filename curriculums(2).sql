@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-05-2016 a las 18:10:49
+-- Tiempo de generación: 12-08-2016 a las 19:55:10
 -- Versión del servidor: 10.1.10-MariaDB
 -- Versión de PHP: 5.6.15
 
@@ -278,7 +278,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`ID`, `Login`, `Password`, `Email`, `Tipo`) VALUES
 (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin@gmail.com', 2),
 (2, 'Miguel', '21232f297a57a5a743894a0e4a801fc3', 'miguelito@hotmail.com', 1),
-(3, 'RRHH', '21232f297a57a5a743894a0e4a801fc3 	', 'usuario@gmail.com', 3),
+(3, 'RRHH', '21232f297a57a5a743894a0e4a801fc3   ', 'usuario@gmail.com', 3),
 (4, 'admin9', '21232f297a57a5a743894a0e4a801fc3', 'ascension9@hotmail.com', 1),
 (5, 'admin60', '07e50bb1e7d00649f12f5045e40032a6', 'ascension60@hotmail.com', 1);
 
@@ -324,8 +324,7 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `comentarios`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `Comentarios_ibfk_1` (`IdComentarios`),
-  ADD KEY `Comentarios_ibfk_2` (`Redactor`);
+  ADD KEY `Comentarios_ibfk_1` (`IdComentarios`);
 
 --
 -- Indices de la tabla `datos`
@@ -422,40 +421,35 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  ADD CONSTRAINT `Comentarios_ibfk_1` FOREIGN KEY (`IdComentarios`) REFERENCES `usuarios` (`ID`),
-  ADD CONSTRAINT `Comentarios_ibfk_2` FOREIGN KEY (`Redactor`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Comentarios_ibfk_1` FOREIGN KEY (`IdComentarios`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `datospersonales`
 --
 ALTER TABLE `datospersonales`
-  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `DatosPersonales_ibfk_1` FOREIGN KEY (`IDdatosPersonales`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionnoreglada`
 --
 ALTER TABLE `formacionnoreglada`
-  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionNoReglada_ibfk_1` FOREIGN KEY (`IdFormacionNoReglada`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `formacionreglada`
 --
 ALTER TABLE `formacionreglada`
-  ADD CONSTRAINT `FormacionReglada_ibfk_1` FOREIGN KEY (`IDFormacionReglada`) REFERENCES `usuarios` (`ID`),
+  ADD CONSTRAINT `FormacionReglada_ibfk_1` FOREIGN KEY (`IDFormacionReglada`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FormacionReglada_ibfk_2` FOREIGN KEY (`Categoria`) REFERENCES `categorias` (`IdCategorias`),
-  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FormacionReglada_ibfk_3` FOREIGN KEY (`Titulacion`) REFERENCES `estudios` (`IDEstudios`);
 
 --
 -- Filtros para la tabla `hobbies`
 --
 ALTER TABLE `hobbies`
-  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`)
-  ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Hobbies_ibfk_1` FOREIGN KEY (`IDHobbies`) REFERENCES `usuarios` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
