@@ -1,5 +1,7 @@
 <?php
+	//función para loguearse a través del acceso VIP.
 	function backoffice_login(){
+		//Si hay un usuario ya logueado, no dejará entrar al loguin.
 		if(!empty($_SESSION['user'])){
 			header("Location: 404.php");
 		}else{
@@ -9,6 +11,7 @@
     			$user = $_POST['user'];
 				$pass = $_POST['passw'];
 
+				//Pasamos la clave a md5.
 				$clave = md5($pass);
 
 				//Si el usuario o la contraseña están vacíos, mostrar 'No pueden haber campos vacíos'
@@ -16,29 +19,37 @@
 					echo '<script language="javascript">alert("No pueden haber campos vacíos");</script>';
 					//Sino, realiza una consulta a la base de datos solicitando todo lo que hay dentro de la tabla usuarios y guarda en arrays.'
 				}else{
+					//Establecemos una nueva conexión en la base de datos.
 					$sql = new conection();
 					$conexion = $sql -> conectar();
+					//Realizamos la consulta.
 					$consulta = $sql->ejecutar_consulta("SELECT * FROM usuarios WHERE Login='$user'");
-				
+					
+					//Si hay error en la consulta.
         			if(!$consulta){
 						die('Error al realizar la consulta');
 						desconectar();
 					}else{
+						//Sino, guardamos el tipo del usuario y la contraseña en variables.
 						while($row=mysqli_fetch_array($consulta)){
 							$tipo = $row['Tipo'];
 							$contra = $row['Password'];
 
+							//Si la contraseña introducida es igual a la que existe en la base de datos.
 							if($clave == $contra){
+								//Creamos variables de sesión con los datos.
 								$_SESSION['user'] = $user;
                     			$_SESSION['tipo'] = $tipo;
                     			$_SESSION['registro'] = 'El ' . date('d') . " de " . date('M') . " del " . date('Y') . " a las " . date('H:i:s') . ' h';
 
+                    			//Por si se logueara un usuario que no es admin o recursos humanos, detectará el rango y enviará al index o al backoffice.
                     			if($tipo == 2 || $tipo == 3){
 									header("Location: backoffice.php");
 								}else{
 									header("Location: index.php");
 								}
 
+							//Si no dará error.
 							}else{
 								echo '<script language="javascript">alert("Los datos introcidos no son correctos, revísalos.");</script>';
 							}
@@ -48,6 +59,7 @@
 			}
 		}
 	}
+	//Función que carga el menú según el tipo del usuario.
 	function backoffice_menu(){
 		$tipo = $_SESSION['tipo'];
 
@@ -59,6 +71,7 @@
 			return "";
 		}
 	}
+	//Función que carga el rango según el tipo de usuario.
 	function cargar_rango(){
 		$tipo = $_SESSION['tipo'];
 		if($tipo == 2){
@@ -69,6 +82,7 @@
 			return 'Usuario';
 		}
 	}
+	//Función para cargar el saludo.
 	function cargar_saludo(){
 		$usuario = $_SESSION['user'];
 		$fecha = $_SESSION['registro'];
@@ -78,6 +92,7 @@
 		echo '<p>Te has logueado: <br>' . $fecha . '.</p>';
 	}
 
+	//Función para crear un nuevo usuario.
 	function nuevo_user(){
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
 		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
@@ -187,6 +202,7 @@
 		}
 	}
 
+	//Función para crear una nueva categoría.
 	function nueva_categoria(){
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
 		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
@@ -207,13 +223,14 @@
 				$validar = 0;
 				$error = 0;
 
-				//Comprobamos que el campo usuario, el email y la contraseña no estén vacíos.
+				//Comprobamos que el campo de la categoría no esté vacío.
 				if(empty($categoria) || is_null($categoria)){
 					echo '<script language="javascript">alert("No pueden haber campos vacíos");</script>';
 					//se van contabilizando los errores.
 					$error ++;
 				}
 
+				//Validamos que no hay espacios en blanco.
 				if(preg_match('/\s/',$categoria)){
 				 	echo '<script language="javascript">alert("No pueden haber espacios en blanco");</script>';
 					//se van contabilizando los errores.
@@ -225,7 +242,7 @@
 				$sql = new conection();
 				//Realizamos la conexión llamando a la función conectar().
 				$conexion = $sql -> conectar();
-				//Realizamos la consulta, en este caso, llamamos a todo el contenido de la tabla usuarios.
+				//Realizamos la consulta.
 				$consulta = $sql->ejecutar_consulta("SELECT NombreCategoria FROM categorias WHERE NombreCategoria='$categoria'");
 
 				//Si hay error en la consulta...
@@ -240,6 +257,7 @@
 						$nombre = $row['NombreCategoria'];
 					}
 
+					//Si devuelve una consulta vacía...
 					if(empty($nombre)){
 						$validar = 0;
 					}else{
@@ -249,7 +267,7 @@
 
 					//Si no hay errores y si no ha cambiado el valor de verificar.
 					if($error == 0 && $validar == 0){
-						//Realizamos un nueva consulta para crear el nuevo usuario.
+						//Realizamos un nueva consulta.
 						$consulta = $sql->ejecutar_consulta("INSERT INTO categorias (IdCategorias, NombreCategoria) VALUES ('','"  . $categoria . "')");
         			
         				//Si hay error en la consulta...
@@ -259,11 +277,11 @@
 							desconectar();
 						//Si no hay errores...
 						}else{
-
+							//Se crea la categoría.
 							echo '<script language="javascript">window.alert("¡¡Categoría creada correctamente!!"); window.location="#";</script>';
 
         				}
-        			//Si se han contabilizado errores o ha cambiado el valor de $verificar...
+        			//Si se han contabilizado errores...
 					}else{
 						echo '<script language="javascript">window.alert("¡¡No se ha podido crear la categoría!!"); window.location="#";</script>';
 					}
@@ -272,6 +290,7 @@
 		}
 	}
 
+	//Función para listar usuarios.
 	function listar_usuarios(){
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
 		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
@@ -279,20 +298,25 @@
 			header("Location: 404.php");
 		//Si la condición anterior no se cumple... 
 		}else{
+			//Realizamos una nueva conexión con la base de datos.
 			$sql = new conection();
 			$conexion = $sql -> conectar();
+			//Ejecutamos la consulta.
 			$consulta = $sql -> ejecutar_consulta("SELECT * FROM usuarios ORDER BY Login ASC");
 
+			//Si hay error en la consulta.
 			if(!$consulta){
 				die('Error al realizar la consulta');
 				desconectar();
 			}else{
+				//Recorre lo que devuelve la consulta y lo almacena en variables.
 				while($row=mysqli_fetch_array($consulta)){
 					$ID = $row['ID'];
 					$usuario = $row['Login'];
 					$email = $row['Email'];
 					$tipo = $row['Tipo'];
 
+					//Imprimimos en una tabla los resultados de la consulta.
 					echo '<tr>
 							<td>'; 
 					echo 		'<span style="margin:15px;">' . $usuario . '</span>';
@@ -335,6 +359,7 @@
 		}
 	}
 
+	//Función para listar categorías.
 	function listar_categorias(){
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
 		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
@@ -342,17 +367,22 @@
 			header("Location: 404.php");
 		//Si la condición anterior no se cumple... 
 		}else{
+			//Establecemos una nueva conexión con la base de datos.
 			$sql = new conection();
 			$conexion = $sql -> conectar();
+			//Ejecutamos la consulta.
 			$consulta = $sql -> ejecutar_consulta("SELECT * FROM categorias ORDER BY NombreCategoria ASC");
 
+			//Si hay error en la consulta.
 			if(!$consulta){
 				die('Error al realizar la consulta');
 				desconectar();
 			}else{
+				//Se recorre lo obtenido en la consulta y se almacena en variables.
 				while($row=mysqli_fetch_array($consulta)){
 					$Categoria = $row['NombreCategoria'];
 
+					//Lo mostramos en una tabla.
 					echo '<tr>
 							<td>'; 
 					echo 		'<span style="margin:15px;">' . $Categoria . '</span>';
@@ -363,6 +393,7 @@
 		}
 	}
 
+	//Función para editar los datos del usuario.
 	function editar_usuario(){
 		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
 		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
@@ -376,8 +407,10 @@
 				header('location: usuarios.php');
 			}
 
+			//Establecemos una nueva conexión con la base de datos.
 			$sql = new conection();
 			$conexion = $sql -> conectar();
+			//Realizamos la consulta.
 			$consulta = $sql -> ejecutar_consulta("SELECT * from usuarios WHERE Login='$usuario_recibido'");
 
 			
@@ -388,6 +421,7 @@
 				desconectar();
 			//Si no hay error...
 			}else{
+				//Recorremos los resultados obtenidos en la consulta y los almacenamos en variables.
 				while($row = mysqli_fetch_array($consulta)){
 					$nombre = $row['Login'];
 					$passw = $row['Password'];
@@ -396,7 +430,7 @@
 				}
 			}
 
-			//Si pulsamos el botón de guardar, realizaremos los cambios si no hay errores de validación
+			//Si pulsamos el botón de guardar
 			if(isset($_POST['guardar'])){
 				$nuevo_user = $_POST['user_name'];
 				$nuevo_email = $_POST['mail'];
@@ -404,14 +438,15 @@
 				$nuevo_password = $_POST['pass_new1'];
 				$nuevo_password_rep = $_POST['pass_new2'];
 
+				//Ciframos la contraseña a md5.
 				$passmd5 = md5($nuevo_password);
 				
-				//Creamos dos variables más para la verificación de errores y datos ya almacenados en la base de datos.
+				//Creamos variables más para la verificación de errores y datos ya almacenados en la base de datos.
 				$verificar = 0;
 				$verificar2 = 0;
 				$error = 0;
 
-				//Comprobamos que el campo usuario, el email.
+				//Comprobamos que el campo usuario, el email no están vacíos.
 				if(empty($nuevo_user) || empty($nuevo_email)){
 					echo '<script language="javascript">alert("No pueden haber campos vacíos");</script>';
 					//se van contabilizando los errores.
@@ -443,6 +478,7 @@
 					}
 				}
 
+				//Realizamos una nueva consulta.
 				$consulta = $sql -> ejecutar_consulta("SELECT * from usuarios");
 
 				//Si hay error en la consulta...
@@ -481,6 +517,7 @@
 				//Si no hay errores y si no ha cambiado el valor de verificar.
 				if($error == 0 && $verificar == 0 && $verificar2 == 0){
 
+					//Realizamos las actualizaciones según lo que hayamos cambiado.
 					if($nuevo_user != $usuario_recibido){
 						$consulta = $sql->ejecutar_consulta("UPDATE usuarios SET Login='$nuevo_user' WHERE Login='$usuario_recibido'");
 					}
@@ -514,6 +551,7 @@
 		}
 	}
 
+	//Función que genera un código al azar de 6 dígitos.
 	function generar_codigo(){
 		//Generamos el código aleatório que nos servirá de validador. 
 		$num1 = rand(1, 9);
@@ -529,22 +567,77 @@
 		return $codigo;
 	}
 
+	//Función para generar un email.
 	function email($s_email){
 
 		$codigo = generar_codigo();
+		$url = "www.toldospitiusas.com/Curriculums/recovery.php";
 
-		$email_subject = "Solicitud de contraseña";
-		$email_message = "Has solicitado recuperar la contraseña, tu código de validación es: " . $codigo;
-		$email_from = "laura.garcia.brao@gmail.com";
+		$email_subject = "Solicitud de Clave de Acceso";
+		$email_message = "
+							<html>
+								<head>
+									<title>Curriculum || Solicitud de contraseña</title>
+								</head>
+								<body>
+									<img src='img/logotipo.png' style='text-align: center'>
+									<h1 style='font-size: 18px'>Has solicitado recuperar la contraseña:</h1> " . $url . "?codigo=" . $codigo .
+								"</body>
+							</html>";
 
 		// Ahora se envía el e-mail usando la función mail() de PHP
-		$headers = 'De: '. $email_from."\r\n". 'Responder: '.$email_from."\r\n" .'X-Mailer: PHP/' . phpversion();
-		
-		/*if(mail($s_email, $email_subject, $email_message, $headers)){
+		$headers = "MIME-Version: 1.0\r\n"; 
+		$headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
+
+		//dirección del remitente 
+		$headers .= "From: Curriculum <laura.garcia.brao@gmail.com>\r\n"; 
+
+		//dirección de respuesta, si queremos que sea distinta que la del remitente 
+		//$headers .= "Reply-To: laura.garcia.brao@gmail.com\r\n"; 
+
+
+		if(mail($s_email, $email_subject, $email_message, $headers)){
 			echo '<script language="javascript">window.alert("Se ha enviado un email al correo ' . $s_email . '");</script>';
 		}else{
 			echo '<script language="javascript">window.alert("No se pudo enviar el email");</script>';
-		} */
+		} 
+	}
+
+	//Función que elimina a un usuario.
+	function borrar(){
+		//metemos en una variable el parámetro get recibido de la página usuarios.php
+		$identificador = $_GET['borrar'];
+
+		//Si no existe el parámetro
+		if(is_null($identificador) || empty($identificador)){
+			//Redirecciona a la lista de usuarios.
+			header("Location: usuarios.php");
+		}
+
+		//Validamos que los invitados no tengan acceso así como validamos que nadie más que el administrador pueda entrar.
+		if(empty($_SESSION['user']) || $_SESSION['tipo'] < 2 || $_SESSION['tipo'] > 2){
+			//Envia a la página de error.
+			header("Location: 404.php");
+		//Si la condición anterior no se cumple... 
+		}else{
+
+			//Establecemos una conexión con la base de datos.
+			$sql = new conection();
+			$conexion = $sql -> conectar();
+			//Realizamos la consulta.
+			$consulta = $sql -> ejecutar_consulta("DELETE FROM usuarios WHERE ID =$identificador");
+		
+			//Si hay error en la consulta...
+			if(!$consulta){
+				die('Error al realizar la consulta');
+				//llama a la función desconectar.
+				desconectar();
+			//Si no hay error...
+			}else{
+				//Mostramos mensaje y redireccionamos.
+				echo '<script language="javascript">window.alert("¡¡Usuario Eliminado!!"); window.location="usuarios.php";</script>';
+			}
+		}
 	}
 
 

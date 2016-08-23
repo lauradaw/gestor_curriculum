@@ -1,5 +1,4 @@
 <?php
-	SESSION_START();
 	$pagina = "Error";
 	$pagina_contenido = "registro";
 	$css = 'registro.css';
